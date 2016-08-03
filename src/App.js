@@ -1,18 +1,27 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import {csv} from 'd3-request';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  componentWillMount() {
+    csv('./data/birthdeathrates.csv', (error, data) => {
+      console.log(data, error);
+      if (error) {
+        this.setState({loadError: true});
+      }
+      this.setState({data});
+    })
+  }
+
   render() {
+    const {loadError, data} = this.state;
+
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        {loadError ? 'couldn\'t load file' : JSON.stringify(data)}
       </div>
     );
   }
